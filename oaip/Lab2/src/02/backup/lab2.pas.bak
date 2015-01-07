@@ -1,0 +1,86 @@
+program lab2;
+
+{$mode objfpc}{$H+}
+
+uses
+    sysutils;
+
+var
+ z, s: string;
+ c: array['a'..'z'] of boolean;
+ a: array[1..100] of string;
+ w: array[1..100] of boolean;
+ f, e, k, j, t, i:integer;
+
+begin
+ write('Enter some text here: ');
+ readln(LowerCase(s)); // запись введённого текста в переменную s
+
+ s := ' ' + s + ' ';
+ j:=2;
+ e:=0;
+
+ // введенное предложение разбирается по словам и записываетсся в массив
+ while  j <= length(s)-1 do
+ begin
+  if (s[j-1] = ' ') and (s[j]<>' ') and (s[j+1] = ' ')  then
+     begin
+     inc(t);
+     a[t] := copy(s,j,1);
+     end
+  else if (s[j-1]=' ') and (s[j]<>' ') then
+     k := j
+  else if (s[j+1]=' ') and (s[j]<>' ') then
+     begin
+        inc(t);
+        a[t]:=copy(s,k,j-k+1);
+     end;
+  inc(j);
+ end;
+
+
+ for i:=1 to t do
+ begin
+   writeln();
+   writeln('Word ' + IntToStr(i) + ' of ' + IntToStr(t));
+   writeln(a[i]);     // выводится каждое слово
+   fillchar(c,sizeof(c), '0');
+   z:=a[i];
+   for j:=1 to length(z) do
+   // калькуляция символов от первого до последнего в слове
+   begin
+    e:=0;
+    for k:=j+1 to length(z) do
+        if z[j] = z[k] then
+           inc(e);                 // инкрементируем е столько раз, в зависимости от того, сколько раз символ встречается в слове
+        if (c[z[j]]) then
+           writeln(#9,z[j],' ',e+1);  // выводится количество символов
+           c[z[j]]:=false;
+   end;
+ end;
+ f:=0;
+ fillchar(w,sizeof(w), true);
+
+ for i:=1 to t-1 do
+ // от первого до предпоследнего слова
+ begin
+  f:=0;
+  if w[i] then for j:=i+1 to t do
+  begin
+       if (a[i] = a[j]) and (w[j]) then  // если слово совпало с последним
+         begin
+             w[j]:= false;               // то оно пропускается
+             inc(f);                     // и переходим к следующему
+         end;
+  end;
+
+  if (f = 0) and (w[i] = true) then      // в случае, если слово не совпало с последним
+     writeln(a[i])                       // выводим его
+  else
+ end;
+
+
+ readln();
+end.
+
+
